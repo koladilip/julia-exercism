@@ -1,5 +1,5 @@
 
-function rotate_char(num, char)
+function rotate_char(num::Int64, char::Char)
     if char in 'a':'z'
         return 'a' + (char - 'a' + num) % 26 
     elseif char in 'A':'Z'
@@ -10,9 +10,13 @@ function rotate_char(num, char)
 end
 
 function rotate(num::Int64, text::String) 
-    join([rotate_char(num, c) for c in collect(text)])
+    map(char->rotate_char(num, char), text)
 end
 
-function rotate(num::Int64, char::Char) 
-    rotate_char(num, char)
+rotate(num::Int64, char::Char)  = rotate_char(num, char)
+
+for i=0:26
+    @eval macro $(Symbol('R', i, "_str"))(text::String)
+        rotate($i, text)
+    end
 end
