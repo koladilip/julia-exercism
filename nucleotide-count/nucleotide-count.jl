@@ -7,11 +7,8 @@ Invalid strands raise a `DomainError`.
 
 """
 function count_nucleotides(strand)
-    strand_arr = collect(strand)
     valid_chars = Set(['A', 'C', 'G', 'T'])
-    strand_chars = Set(strand_arr)
-    if !isempty(setdiff(strand_chars, valid_chars))
-        throw(DomainError("Found invalid nucleotides"))
-    end
-    Dict(element => count(==(element), strand_arr) for element in valid_chars)
+    counts = Dict(c=>0 for c in valid_chars)
+    foreach(c -> counts[c] = get(counts, c, 0) + 1, strand)
+    issubset(keys(counts), valid_chars) ? counts : throw(DomainError("Invalid strand"))
 end
